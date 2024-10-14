@@ -44,7 +44,10 @@ function CodeBlock(props: any) {
       {match ? (
         <div className="relative">
           <button
-            className="absolute top-4 right-4 text-white"
+            className={cn(
+              "absolute top-4 right-4",
+              copied ? "text-green-500" : "text-white"
+            )}
             onClick={() => copyToClipboard(String(children))}
           >
             {copied ? <ClipboardCheck /> : <Clipboard />}
