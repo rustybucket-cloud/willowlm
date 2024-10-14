@@ -40,20 +40,22 @@ function CodeBlock(props: any) {
 
   return (
     <div className="relative">
-      <button
-        className="absolute top-4 right-4 text-white"
-        onClick={() => copyToClipboard(String(children))}
-      >
-        {copied ? <ClipboardCheck /> : <Clipboard />}
-      </button>
       {match ? (
-        <SyntaxHighlighter
-          {...rest}
-          PreTag="div"
-          children={String(children).replace(/\n$/, "")}
-          language={match[1]}
-          style={dark}
-        />
+        <>
+          <button
+            className="absolute top-4 right-4 text-white"
+            onClick={() => copyToClipboard(String(children))}
+          >
+            {copied ? <ClipboardCheck /> : <Clipboard />}
+          </button>
+          <SyntaxHighlighter
+            {...rest}
+            PreTag="div"
+            children={String(children).replace(/\n$/, "")}
+            language={match[1]}
+            style={dark}
+          />
+        </>
       ) : (
         <code {...rest} className={className}>
           {children}

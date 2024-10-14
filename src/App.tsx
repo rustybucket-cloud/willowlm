@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import {
   MarkdownEditor,
@@ -10,6 +10,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { MenuIcon, PlusIcon } from "lucide-react";
@@ -23,6 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChatOpenAI } from "@langchain/openai";
+import {
+  create,
+  BaseDirectory,
+  open,
+  readDir,
+  exists,
+  mkdir,
+} from "@tauri-apps/plugin-fs";
 
 const llm = new ChatOpenAI({
   modelName: "gpt-4o",
@@ -34,12 +43,50 @@ const llm = new ChatOpenAI({
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [model, setModel] = useState<string>("gpt-4o");
+  const [chatName, setChatName] = useState<string>("untitled");
+  const [files, setFiles] = useState<string[]>([]);
   const markdownEditor = useMarkdownEditor();
   const editorWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const readFiles = async () => {
+      const dirExists = await exists("chats", {
+        baseDir: BaseDirectory.AppData,
+      });
+      if (!dirExists) {
+        await mkdir("chats", {
+          baseDir: BaseDirectory.AppData,
+          recursive: true,
+        });
+      }
+
+      const fs = await readDir("chats", {
+        baseDir: BaseDirectory.AppData,
+      });
+      setFiles(fs.map((f) => f.name));
+    };
+    readFiles();
+  }, []);
 
   const sendMessage = async () => {
     const content = markdownEditor.getMarkdown() || "";
     if (!content) return;
+
+    if (messages.length === 0) {
+      const fs = await create("chats/untitled.md", {
+        baseDir: BaseDirectory.AppData,
+      });
+      const newData = `# Untitled Chat\n\n--USER--\n\n${content}`;
+      await fs.write(new TextEncoder().encode(newData));
+    } else {
+      const fs = await open(`chats/${chatName}.md`, {
+        baseDir: BaseDirectory.AppData,
+        append: true,
+      });
+      const newData = `\n\n--USER--\n\n${content}`;
+      await fs.write(new TextEncoder().encode(newData));
+    }
+
     setMessages([
       ...messages,
       { content, role: "user" },
@@ -67,7 +114,32 @@ function App() {
         return newMessages;
       });
     }
+
+    const fs = await open(`chats/${chatName}.md`, {
+      baseDir: BaseDirectory.AppData,
+      append: true,
+    });
+    const newData = `\n\n--ASSISTANT--\n\n${newContent}`;
+    await fs.write(new TextEncoder().encode(newData));
   };
+
+  const [editorHeight, setEditorHeight] = useState(0);
+  useEffect(() => {
+    const editorWrapper = editorWrapperRef.current;
+    if (!editorWrapper) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.contentRect.height;
+        setEditorHeight(height);
+      }
+    });
+    resizeObserver.observe(editorWrapper);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -78,12 +150,23 @@ function App() {
         <SheetContent side="left">
           <SheetHeader className="flex justify-between">
             <div className="flex items-center gap-2">
-              <p>Chat</p>
+              <SheetTitle>Chats</SheetTitle>
               <Button variant="ghost" size="icon">
                 <PlusIcon />
               </Button>
             </div>
           </SheetHeader>
+          <div className="flex flex-col gap-2">
+            {files.map((file) => (
+              <Button
+                key={file}
+                onClick={() => setChatName(file)}
+                variant="ghost"
+              >
+                {file}
+              </Button>
+            ))}
+          </div>
         </SheetContent>
       </Sheet>
 
@@ -94,7 +177,12 @@ function App() {
           </h1>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 max-w-3xl mx-auto p-3 mb-48">
+        <div
+          className="flex flex-col gap-2 max-w-3xl mx-auto p-3"
+          style={{
+            marginBottom: `${editorHeight + 24}px`,
+          }}
+        >
           {messages.map((message) => (
             <div
               key={message.content}
