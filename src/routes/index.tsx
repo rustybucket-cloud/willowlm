@@ -1,20 +1,12 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
-import "./App.css";
 import {
   MarkdownEditor,
   MarkdownViewer,
   useMarkdownEditor,
-} from "./components";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-  SheetTitle,
-} from "@/components/ui/sheet";
+} from "@/components";
 import { Button } from "@/components/ui/button";
-import { MenuIcon, PlusIcon } from "lucide-react";
-import type { Message } from "./types";
+import type { Message } from "@/types";
 import { ArrowUpIcon } from "lucide-react";
 import {
   Select,
@@ -24,15 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChatOpenAI } from "@langchain/openai";
-import {
-  create,
-  BaseDirectory,
-  open,
-  readDir,
-  exists,
-  mkdir,
-  rename,
-} from "@tauri-apps/plugin-fs";
+import { create, BaseDirectory, open, rename } from "@tauri-apps/plugin-fs";
+
+export const Route = createFileRoute("/")({
+  component: Home,
+});
 
 const llm = new ChatOpenAI({
   modelName: "gpt-4o",
@@ -41,33 +29,12 @@ const llm = new ChatOpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 });
 
-function App() {
+function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [model, setModel] = useState<string>("gpt-4o");
   const [chatName, setChatName] = useState<string>("untitled");
-  const [files, setFiles] = useState<string[]>([]);
   const markdownEditor = useMarkdownEditor();
   const editorWrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const readFiles = async () => {
-      const dirExists = await exists("chats", {
-        baseDir: BaseDirectory.AppData,
-      });
-      if (!dirExists) {
-        await mkdir("chats", {
-          baseDir: BaseDirectory.AppData,
-          recursive: true,
-        });
-      }
-
-      const fs = await readDir("chats", {
-        baseDir: BaseDirectory.AppData,
-      });
-      setFiles(fs.map((f) => f.name));
-    };
-    readFiles();
-  }, []);
 
   const sendMessage = async () => {
     const content = markdownEditor.getMarkdown() || "";
@@ -119,7 +86,7 @@ function App() {
         return newMessages;
       });
     }
-    console.log(chatName);
+
     const fs = await open(`chats/${chatName}.md`, {
       baseDir: BaseDirectory.AppData,
       append: true,
@@ -164,33 +131,6 @@ function App() {
 
   return (
     <>
-      <Sheet>
-        <SheetTrigger className="fixed top-3 left-3">
-          <MenuIcon />
-        </SheetTrigger>
-        <SheetContent side="left">
-          <SheetHeader className="flex justify-between">
-            <div className="flex items-center gap-2">
-              <SheetTitle>Chats</SheetTitle>
-              <Button variant="ghost" size="icon">
-                <PlusIcon />
-              </Button>
-            </div>
-          </SheetHeader>
-          <div className="flex flex-col gap-2">
-            {files.map((file) => (
-              <Button
-                key={file}
-                onClick={() => setChatName(file)}
-                variant="ghost"
-              >
-                {file}
-              </Button>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet>
-
       {messages.length === 0 ? (
         <div className="min-h-screen flex flex-col justify-center items-center">
           <h1 className="text-2xl font-bold">
@@ -243,5 +183,3 @@ function App() {
     </>
   );
 }
-
-export default App;

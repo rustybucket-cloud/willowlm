@@ -16,6 +16,7 @@
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-router": "^1.65.0",
     "@tauri-apps/api": ">=2.0.0",
     "@tauri-apps/plugin-fs": "^2.0.0",
     "@tauri-apps/plugin-shell": ">=2.0.0",
@@ -30,6 +31,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@tanstack/router-devtools": "^1.65.0",
+    "@tanstack/router-plugin": "^1.65.0",
     "@tauri-apps/cli": ">=2.0.0",
     "@types/node": "^22.7.5",
     "@types/react": "^18.2.15",
