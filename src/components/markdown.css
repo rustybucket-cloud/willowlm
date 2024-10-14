@@ -1,0 +1,41 @@
+.md-wrapper {
+  h1 {
+    @apply text-4xl mb-4;
+  }
+
+  h2 {
+    @apply text-3xl mt-4 mb-2;
+  }
+
+  h3 {
+    @apply text-2xl mt-4 mb-2;
+  }
+
+  h4 {
+    @apply text-xl mt-4 mb-2;
+  }
+
+  h5 {
+    @apply text-lg mt-4 mb-2;
+  }
+
+  h6 {
+    @apply text-base mt-4 mb-2;
+  }
+
+  p {
+    @apply text-base;
+  }
+
+  ul {
+    @apply list-disc pl-4;
+  }
+
+  ol {
+    @apply list-decimal pl-4;
+  }
+
+  li {
+    @apply text-base;
+  }
+}
