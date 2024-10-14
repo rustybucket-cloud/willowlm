@@ -3,6 +3,7 @@ import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Clipboard, ClipboardCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import "../markdown.css";
 
@@ -39,9 +40,9 @@ function CodeBlock(props: any) {
   };
 
   return (
-    <div className="relative">
+    <>
       {match ? (
-        <>
+        <div className="relative">
           <button
             className="absolute top-4 right-4 text-white"
             onClick={() => copyToClipboard(String(children))}
@@ -55,12 +56,12 @@ function CodeBlock(props: any) {
             language={match[1]}
             style={dark}
           />
-        </>
+        </div>
       ) : (
-        <code {...rest} className={className}>
+        <code {...rest} className={cn(className, "bg-gray-100")}>
           {children}
         </code>
       )}
-    </div>
+    </>
   );
 }
