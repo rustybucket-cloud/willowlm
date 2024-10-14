@@ -31,6 +31,7 @@ import {
   readDir,
   exists,
   mkdir,
+  rename,
 } from "@tauri-apps/plugin-fs";
 
 const llm = new ChatOpenAI({
@@ -72,7 +73,9 @@ function App() {
     const content = markdownEditor.getMarkdown() || "";
     if (!content) return;
 
+    let shouldNameFile = false;
     if (messages.length === 0) {
+      shouldNameFile = true;
       const fs = await create("chats/untitled.md", {
         baseDir: BaseDirectory.AppData,
       });
@@ -105,22 +108,40 @@ function App() {
       },
     ]);
 
+    let allMessages;
     let newContent = "";
     for await (const chunk of stream) {
       newContent += chunk.content;
       setMessages((prev) => {
         const newMessages = [...prev];
         newMessages[newMessages.length - 1].content = newContent;
+        allMessages = newMessages;
         return newMessages;
       });
     }
-
+    console.log(chatName);
     const fs = await open(`chats/${chatName}.md`, {
       baseDir: BaseDirectory.AppData,
       append: true,
     });
     const newData = `\n\n--ASSISTANT--\n\n${newContent}`;
     await fs.write(new TextEncoder().encode(newData));
+
+    if (shouldNameFile) {
+      const response = await llm.invoke([
+        ...(allMessages || []),
+        {
+          role: "system",
+          content:
+            "Create a short name for this chat based on the question and answer.",
+        },
+      ]);
+      setChatName(response.content);
+      await rename(`chats/untitled.md`, `chats/${response.content}.md`, {
+        oldPathBaseDir: BaseDirectory.AppData,
+        newPathBaseDir: BaseDirectory.AppData,
+      });
+    }
   };
 
   const [editorHeight, setEditorHeight] = useState(0);
