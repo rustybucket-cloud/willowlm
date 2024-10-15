@@ -17,6 +17,7 @@ import {
   watch,
 } from "@tauri-apps/plugin-fs";
 import { Link } from "@tanstack/react-router";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const Route = createRootRoute({
   component: Root,
@@ -24,6 +25,7 @@ export const Route = createRootRoute({
 
 function Root() {
   const [files, setFiles] = useState<string[]>([]);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const updateFiles = useCallback(async () => {
     const fs = await readDir("chats", {
@@ -60,9 +62,11 @@ function Root() {
     readFiles();
   }, [updateFiles]);
 
+  useHotkeys("meta+b", () => setSheetOpen((prev) => !prev));
+
   return (
     <>
-      <Sheet>
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetTrigger className="fixed top-3 left-3">
           <MenuIcon />
         </SheetTrigger>
