@@ -16,6 +16,7 @@ import {
   mkdir,
   watch,
 } from "@tauri-apps/plugin-fs";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: Root,
@@ -60,7 +61,7 @@ function Root() {
   }, [updateFiles]);
 
   return (
-    <body>
+    <>
       <Sheet>
         <SheetTrigger className="fixed top-3 left-3">
           <MenuIcon />
@@ -69,32 +70,36 @@ function Root() {
           <SheetHeader className="flex justify-between">
             <div className="flex items-center gap-2">
               <SheetTitle>Chats</SheetTitle>
-              <Button variant="ghost" size="icon">
-                <PlusIcon />
-              </Button>
+              <Link to="/$chatName" params={{ chatName: "new" }}>
+                <Button variant="ghost" size="icon">
+                  <PlusIcon />
+                </Button>
+              </Link>
             </div>
           </SheetHeader>
           <div className="flex flex-col gap-2">
             {files.map((file) => (
-              <Button key={file} variant="ghost">
-                {getFileName(file)}
-              </Button>
+              <Link
+                to="/$chatName"
+                params={{ chatName: encodeURIComponent(file) }}
+              >
+                <Button
+                  key={file}
+                  variant="ghost"
+                  className="flex justify-start"
+                >
+                  {getFileName(file)}
+                </Button>
+              </Link>
             ))}
           </div>
         </SheetContent>
       </Sheet>
       <Outlet />
-    </body>
+    </>
   );
 }
 
 function getFileName(path: string) {
-  const regex = /"([^"]*)"/;
-  const match = path.match(regex);
-
-  if (match) {
-    return match[1];
-  } else {
-    return path;
-  }
+  return decodeURIComponent(path.replace(".json", ""));
 }
