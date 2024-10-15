@@ -82,11 +82,12 @@ function Root() {
               <Link
                 to="/$chatName"
                 params={{ chatName: encodeURIComponent(file) }}
+                className="w-full"
               >
                 <Button
                   key={file}
                   variant="ghost"
-                  className="flex justify-start"
+                  className="flex justify-start w-full"
                 >
                   {getFileName(file)}
                 </Button>
