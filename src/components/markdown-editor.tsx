@@ -47,7 +47,7 @@ type Props = {
 
 export const MarkdownEditor = ({ initialMarkdown = "", editorRef }: Props) => {
   return (
-    <div className="shadow-lg rounded md-wrapper bg-gray-100">
+    <div className="shadow-lg rounded md-wrapper bg-gray-800">
       <MDXEditor
         ref={editorRef}
         markdown={initialMarkdown}

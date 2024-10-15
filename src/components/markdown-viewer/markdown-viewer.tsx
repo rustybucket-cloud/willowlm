@@ -61,7 +61,14 @@ function CodeBlock(props: any) {
           />
         </div>
       ) : (
-        <code {...rest} className={cn(className, "bg-gray-100 px-1 rounded")}>
+        <code
+          {...rest}
+          className={cn(
+            className,
+            "bg-gray-100 px-1 rounded",
+            "dark:bg-gray-800"
+          )}
+        >
           {children}
         </code>
       )}

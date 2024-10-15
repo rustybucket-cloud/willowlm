@@ -217,7 +217,7 @@ function Home() {
               key={message.content}
               className={
                 message.role === "user"
-                  ? "self-end bg-gray-100 rounded-lg p-2"
+                  ? "self-end bg-gray-800 rounded-lg p-2"
                   : ""
               }
             >
@@ -240,7 +240,12 @@ function Home() {
               <SelectItem value="gpt-4o">GPT-4o</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={sendMessage} variant="ghost" size="icon">
+          <Button
+            onClick={sendMessage}
+            variant="ghost"
+            size="icon"
+            className="bg-black"
+          >
             <ArrowUpIcon />
           </Button>
         </div>
