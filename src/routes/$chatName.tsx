@@ -56,15 +56,21 @@ const llm = new ChatOpenAI({
 
 function Home() {
   const { initialMessages } = Route.useLoaderData();
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [model, setModel] = useState<string>("gpt-4o");
   const [chatName, setChatName] = useState<string>("untitled");
   const markdownEditor = useMarkdownEditor();
   const editorWrapperRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isEqual(messages, initialMessages)) {
       setMessages(initialMessages);
+      setTimeout(() => {
+        scrollableRef.current?.scrollTo({
+          top: scrollableRef.current.scrollHeight,
+        });
+      }, 10);
     }
   }, [initialMessages]);
 
@@ -92,13 +98,14 @@ function Home() {
     let stream;
     try {
       stream = await llm.stream([
-        {
-          role: "system",
-          content: "Respond in markdown.",
-        },
+        ...messages,
         {
           role: "user",
           content,
+        },
+        {
+          role: "system",
+          content: "Respond in markdown.",
         },
       ]);
     } catch (e: any) {
@@ -203,6 +210,7 @@ function Home() {
           style={{
             marginBottom: `${editorHeight + 24}px`,
           }}
+          ref={scrollableRef}
         >
           {messages.map((message) => (
             <div
