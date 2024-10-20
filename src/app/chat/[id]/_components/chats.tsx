@@ -43,20 +43,23 @@ export default function Chats({
             </Link>
           </div>
         </SheetHeader>
-        {chats.map((chat) => (
-          <Button
-            key={chat.id}
-            variant={Number(activeChatId) === chat.id ? "default" : "ghost"}
-            className="flex w-full justify-start"
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            <Link href={`/chat/${chat.id}`} className="w-full text-start">
-              {chat.name}
-            </Link>
-          </Button>
-        ))}
+        <ul>
+          {chats.map((chat) => (
+            <li key={chat.id}>
+              <Button
+                variant={Number(activeChatId) === chat.id ? "default" : "ghost"}
+                className="flex w-full justify-start"
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
+                <Link href={`/chat/${chat.id}`} className="w-full text-start">
+                  {chat.name}
+                </Link>
+              </Button>
+            </li>
+          ))}
+        </ul>
       </SheetContent>
     </Sheet>
   );
