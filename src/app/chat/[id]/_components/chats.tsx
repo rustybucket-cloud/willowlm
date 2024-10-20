@@ -23,7 +23,7 @@ export default function Chats({
 
   return (
     <Sheet open={isOpen} onOpenChange={(newOpen) => setIsOpen(newOpen)}>
-      <SheetTrigger className="absolute left-2 top-2">
+      <SheetTrigger className="fixed left-2 top-2">
         <Menu />
       </SheetTrigger>
       <SheetContent side="left">
