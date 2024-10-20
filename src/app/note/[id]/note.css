@@ -1,0 +1,10 @@
+.md-container {
+  div {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .milkdown {
+    @apply bg-background mx-auto max-w-screen-xl;
+  }
+}

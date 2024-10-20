@@ -1,0 +1,50 @@
+import { Menu, Plus } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
+import Link from "next/link";
+import { Button } from "~/components/ui/button";
+import { Chat } from "~/types";
+
+export default function Chats({
+  chats,
+  activeChatId,
+}: {
+  chats: Chat[];
+  activeChatId: string | null;
+}) {
+  return (
+    <Sheet>
+      <SheetTrigger className="absolute left-2 top-2">
+        <Menu />
+      </SheetTrigger>
+      <SheetContent side="left">
+        <SheetHeader className="flex justify-between">
+          <div className="flex items-center gap-2">
+            <SheetTitle>Chats</SheetTitle>
+            <Link href="/chat/new">
+              <Button variant="ghost" size="icon">
+                <Plus />
+              </Button>
+            </Link>
+          </div>
+        </SheetHeader>
+        {chats.map((chat) => (
+          <Button
+            key={chat.id}
+            variant={Number(activeChatId) === chat.id ? "default" : "ghost"}
+            className="flex w-full justify-start"
+          >
+            <Link href={`/chat/${chat.id}`} className="text-start">
+              {chat.name}
+            </Link>
+          </Button>
+        ))}
+      </SheetContent>
+    </Sheet>
+  );
+}

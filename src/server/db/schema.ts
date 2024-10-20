@@ -7,9 +7,10 @@ import {
   text,
   timestamp,
   varchar,
+  serial,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
-
+import { ROLES } from "~/lib/roles";
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.
@@ -34,6 +35,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  chats: many(chats),
 }));
 
 export const accounts = createTable(
@@ -106,3 +108,37 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+
+export const chats = createTable("chat", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  name: varchar("name", { length: 255 }).notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const chatsRelations = relations(chats, ({ many, one }) => ({
+  messages: many(messages),
+  user: one(users, { fields: [chats.userId], references: [users.id] }),
+}));
+
+export const messages = createTable("message", {
+  id: serial("id").primaryKey(),
+  chatId: integer("chat_id").notNull(),
+  role: varchar("role", { length: 255, enum: ROLES }).notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  chat: one(chats, { fields: [messages.chatId], references: [chats.id] }),
+}));

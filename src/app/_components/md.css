@@ -1,0 +1,45 @@
+.md-container {
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply mt-4 text-3xl;
+  }
+
+  h3 {
+    @apply mt-4 text-2xl;
+  }
+
+  h4 {
+    @apply mt-4 text-xl;
+  }
+
+  h5 {
+    @apply mt-4 text-lg;
+  }
+
+  h6 {
+    @apply mt-4 text-base;
+  }
+
+  p {
+    @apply text-base;
+  }
+
+  pre {
+    @apply rounded-md py-4;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  li {
+    @apply ml-4 mt-2;
+  }
+}
