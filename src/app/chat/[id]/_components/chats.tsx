@@ -10,7 +10,6 @@ import {
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { Chat } from "~/types";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Chats({
@@ -20,7 +19,6 @@ export default function Chats({
   chats: Chat[];
   activeChatId: string | null;
 }) {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
