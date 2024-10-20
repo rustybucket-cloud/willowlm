@@ -37,6 +37,13 @@ export default function ChatEditor({
     },
   });
 
+  const saveMessageQuery = api.chat.saveMessages.useMutation({
+    onError: (error: any) => {
+      // todo: handle error
+      console.error(error);
+    },
+  });
+
   const chatQuery = api.ai.chat.useMutation({
     onSuccess: async (data) => {
       let response = "";
@@ -55,6 +62,14 @@ export default function ChatEditor({
       if (id === "new") {
         createChatQuery.mutate({
           messages: messages,
+        });
+      } else {
+        const lastUserMessage = messages?.[messages.length - 2];
+        const lastAssistantMessage = messages?.[messages.length - 1];
+        if (!lastUserMessage || !lastAssistantMessage) return;
+        saveMessageQuery.mutate({
+          chatId: Number(id),
+          messages: [lastUserMessage, lastAssistantMessage],
         });
       }
     },

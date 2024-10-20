@@ -35,7 +35,6 @@ export const chatRouter = createTRPCRouter({
         .values({
           userId: ctx.session?.user.id,
           name,
-          //   messages: input.messages,
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -59,6 +58,23 @@ export const chatRouter = createTRPCRouter({
 
       return newChat;
     }),
+  saveMessages: protectedProcedure
+    .input(
+      z.object({
+        messages: z.array(messageSchema),
+        chatId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [userMessage, assistantMessage] = input.messages;
+      if (!userMessage || !assistantMessage) {
+        throw new Error("Invalid messages");
+      }
+      await ctx.db.insert(messages).values([
+        { chatId: input.chatId, ...userMessage },
+        { chatId: input.chatId, ...assistantMessage },
+      ]);
+    }),
   getWithMessages: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }): Promise<ChatWithMessages | null> => {
@@ -75,15 +91,14 @@ export const chatRouter = createTRPCRouter({
 
       const chatWithMessages = chat[0].chat;
 
-      const chatMessages = chat
-        .filter((c) => c.message != null)
-        .map((c) => c.message);
-
       return {
         ...chatWithMessages,
-        messages: chatMessages.filter(
-          (message): message is NonNullable<typeof message> => message !== null,
-        ),
+        messages: chat
+          .map((c) => c.message)
+          .filter(
+            (message): message is NonNullable<typeof message> =>
+              message !== null,
+          ),
       };
     }),
   getAll: protectedProcedure.query(async ({ ctx }): Promise<Chat[]> => {

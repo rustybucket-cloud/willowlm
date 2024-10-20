@@ -13,7 +13,7 @@ import { OpenAI } from "@langchain/openai";
 import { MODELS } from "~/lib/models";
 
 export const aiRouter = createTRPCRouter({
-  chat: publicProcedure
+  chat: protectedProcedure
     .input(
       z.object({
         messages: z.array(
