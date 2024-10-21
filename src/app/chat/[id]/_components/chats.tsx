@@ -43,6 +43,7 @@ export default function Chats({
             </Link>
           </div>
         </SheetHeader>
+
         <ul>
           {chats.map((chat) => (
             <li key={chat.id}>
