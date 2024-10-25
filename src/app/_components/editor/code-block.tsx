@@ -4,6 +4,8 @@ import {
 } from "@mdxeditor/editor";
 import MonacoEditor from "@monaco-editor/react";
 import { TrashIcon } from "lucide-react";
+import { editor } from "monaco-editor";
+import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Select,
@@ -19,10 +21,16 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   Editor: (props) => {
     const cb = useCodeBlockEditorContext();
 
+    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
     const lineCount = props.code.split("\n").length;
     const lineHeight = 20;
     const maxHeight = 500;
-    const height = Math.min(lineCount * lineHeight, maxHeight);
+    const minHeight = 50;
+    const height = Math.min(
+      Math.max(lineCount * lineHeight, minHeight),
+      maxHeight,
+    );
 
     const handleDelete = () => {
       cb.parentEditor.update(() => {
@@ -75,6 +83,10 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
           theme="vs-dark"
           options={{
             scrollBeyondLastLine: false,
+          }}
+          onMount={(editor) => {
+            editorRef.current = editor;
+            editor.focus();
           }}
         />
       </div>
