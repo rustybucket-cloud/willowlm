@@ -42,7 +42,7 @@ const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
             defaultValue={language}
             value={language}
             onValueChange={(value) => {
-              cb.setLanguage(value as string);
+              cb.setLanguage(value ?? "plaintext");
             }}
           >
             <SelectTrigger className="max-w-48">
