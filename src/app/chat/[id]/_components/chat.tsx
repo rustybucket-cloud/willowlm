@@ -6,7 +6,6 @@ import type { ChatWithMessages, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 import "~/app/_components/md.css";
-import { useRouter } from "next/navigation";
 import Editor from "./editor";
 
 export default function Chat({
@@ -17,13 +16,14 @@ export default function Chat({
   chat?: ChatWithMessages;
 }) {
   const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
-  const router = useRouter();
 
   const createChatQuery = api.chat.create.useMutation({
     onSuccess: (data) => {
       // todo: handle error
       if (!data?.id) return;
-      router.push(`/chat/${data.id}`);
+      const currentUrl = window.location.href;
+      const newUrl = currentUrl.replace("new", data.id.toString());
+      window.history.pushState({}, "", newUrl);
     },
   });
 
