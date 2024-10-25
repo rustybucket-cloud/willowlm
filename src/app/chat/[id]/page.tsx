@@ -4,9 +4,13 @@ import { notFound } from "next/navigation";
 import Chats from "./_components/chats";
 import { getServerAuthSession } from "~/server/auth";
 import NavMenu from "~/components/nav-menu";
+import ChatList from "./_components/chat-list";
+import { Suspense } from "react";
 
 export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
+
+  void api.chat.getAll();
   const session = await getServerAuthSession();
 
   let chat;
@@ -17,12 +21,14 @@ export default async function Chat({ params }: { params: { id: string } }) {
     }
   }
 
-  const allChats = await api.chat.getAll();
-
   return (
     <HydrateClient>
       {session ? <NavMenu session={session} /> : null}
-      <Chats chats={allChats} activeChatId={id} />
+      <Chats>
+        <Suspense fallback={<div>Loading chats...</div>}>
+          <ChatList activeChatId={id} />
+        </Suspense>
+      </Chats>
       <ChatEditor id={id} chat={chat} />
     </HydrateClient>
   );

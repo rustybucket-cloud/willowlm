@@ -8,7 +8,7 @@ import {
   MenubarTrigger,
 } from "./ui/menubar";
 import { Button } from "./ui/button";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 
 export default function NavMenu({ session }: { session: Session }) {
   return (

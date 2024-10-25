@@ -6,10 +6,5 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <Menu className="fixed left-2 top-2 text-gray-500" />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

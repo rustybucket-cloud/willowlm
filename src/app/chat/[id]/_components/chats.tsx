@@ -9,16 +9,9 @@ import {
 } from "~/components/ui/sheet";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { type Chat } from "~/types";
 import { useState } from "react";
 
-export default function Chats({
-  chats,
-  activeChatId,
-}: {
-  chats: Chat[];
-  activeChatId: string | null;
-}) {
+export default function Chats({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -44,23 +37,7 @@ export default function Chats({
           </div>
         </SheetHeader>
 
-        <ul>
-          {chats.map((chat) => (
-            <li key={chat.id}>
-              <Button
-                variant={Number(activeChatId) === chat.id ? "default" : "ghost"}
-                className="flex w-full justify-start"
-                onClick={() => {
-                  setIsOpen(false);
-                }}
-              >
-                <Link href={`/chat/${chat.id}`} className="w-full text-start">
-                  {chat.name}
-                </Link>
-              </Button>
-            </li>
-          ))}
-        </ul>
+        {children}
       </SheetContent>
     </Sheet>
   );
