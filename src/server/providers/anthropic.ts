@@ -1,5 +1,5 @@
 import { ChatAnthropic } from "@langchain/anthropic";
-import { Model, TempMessage } from "~/types";
+import { type Model, type TempMessage } from "~/types";
 
 export function stream(messages: TempMessage[], model: Model) {
   const anthropic = createAnthropic(model);
