@@ -5,7 +5,7 @@ import {
 import MonacoEditor from "@monaco-editor/react";
 import { TrashIcon } from "lucide-react";
 import { editor } from "monaco-editor";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Select,
