@@ -5,8 +5,8 @@ import { invoke } from "~/server/providers/openAI";
 
 import { messageSchema } from "~/lib/zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { asc, desc, eq } from "drizzle-orm";
-import { Chat, ChatWithMessages } from "~/types";
+import { asc, desc, eq, and } from "drizzle-orm";
+import { type Chat, type ChatWithMessages } from "~/types";
 
 export const chatRouter = createTRPCRouter({
   create: protectedProcedure
@@ -78,10 +78,16 @@ export const chatRouter = createTRPCRouter({
   getWithMessages: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }): Promise<ChatWithMessages | null> => {
+      if (!ctx.session?.user.id) {
+        // todo: handle this error
+        return null;
+      }
       const chat = await ctx.db
         .select()
         .from(chats)
-        .where(eq(chats.id, input.id))
+        .where(
+          and(eq(chats.id, input.id), eq(chats.userId, ctx.session.user.id)),
+        )
         .leftJoin(messages, eq(messages.chatId, chats.id))
         .orderBy(asc(messages.createdAt));
 

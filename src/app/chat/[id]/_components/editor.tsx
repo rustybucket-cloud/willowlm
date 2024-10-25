@@ -42,7 +42,7 @@ export default function ChatEditor({
   };
 
   return (
-    <div className="fixed bottom-8 left-0 right-0 mx-auto flex max-w-4xl flex-col gap-4">
+    <div className="fixed bottom-8 left-0 right-0 mx-auto flex max-w-4xl flex-col gap-4 px-4">
       <div className="flex justify-between">
         <Select defaultValue={model} onValueChange={updateModel}>
           <SelectTrigger className="max-w-48">

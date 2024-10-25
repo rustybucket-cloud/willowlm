@@ -9,7 +9,7 @@ import {
 } from "~/components/ui/sheet";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { Chat } from "~/types";
+import { type Chat } from "~/types";
 import { useState } from "react";
 
 export default function Chats({

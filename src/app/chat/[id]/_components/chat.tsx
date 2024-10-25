@@ -88,7 +88,7 @@ export default function Chat({
         </p>
       ) : null}
       {messages.length > 0 ? (
-        <div className="md-container mx-auto mb-44 flex max-w-4xl flex-col gap-2 p-2">
+        <div className="md-container mx-auto mb-44 flex max-w-4xl flex-col gap-2 p-2 px-4">
           {messages.map((message) => (
             <div
               key={message.content}
