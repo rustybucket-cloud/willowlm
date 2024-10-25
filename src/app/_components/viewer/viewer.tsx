@@ -4,6 +4,7 @@ import { Button } from "~/components/ui/button";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { cn } from "~/lib/utils";
 
 export function Viewer({ markdown }: { markdown: string }) {
   return (
@@ -50,7 +51,7 @@ function CodeBlock(props: any) {
       />
     </div>
   ) : (
-    <code {...rest} className={className}>
+    <code {...rest} className={cn("rounded bg-gray-700 px-1", className)}>
       {children}
     </code>
   );

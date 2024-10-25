@@ -16,8 +16,10 @@
   "dependencies": {
     "@ai-sdk/openai": "^0.0.68",
     "@auth/drizzle-adapter": "^1.1.0",
+    "@langchain/anthropic": "^0.3.5",
     "@langchain/core": "^0.3.13",
     "@langchain/openai": "^0.3.11",
+    "@mdxeditor/editor": "^3.14.0",
     "@milkdown/crepe": "^7.5.7",
     "@milkdown/kit": "^7.5.5",
     "@milkdown/react": "^7.5.0",

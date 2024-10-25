@@ -1,17 +1,9 @@
 import { api, HydrateClient } from "~/trpc/server";
-import ChatEditor from "./_components/chat-editor";
+import ChatEditor from "./_components/chat";
 import { notFound } from "next/navigation";
 import Chats from "./_components/chats";
-import Link from "next/link";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "~/components/ui/menubar";
 import { getServerAuthSession } from "~/server/auth";
-import { Button } from "~/components/ui/button";
+import NavMenu from "~/components/nav-menu";
 
 export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -29,23 +21,7 @@ export default async function Chat({ params }: { params: { id: string } }) {
 
   return (
     <HydrateClient>
-      <Menubar className="border-0">
-        <MenubarMenu>
-          <MenubarTrigger className="fixed right-2 top-2">
-            {session?.user?.name}
-          </MenubarTrigger>
-          <MenubarContent className="relative right-2">
-            <MenubarItem>
-              <Link href="/api/auth/signout" className="h-full w-full">
-                <Button variant="ghost" className="h-full w-full">
-                  Logout
-                </Button>
-              </Link>
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
-
+      {session ? <NavMenu session={session} /> : null}
       <Chats chats={allChats} activeChatId={id} />
       <ChatEditor id={id} chat={chat} />
     </HydrateClient>
