@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { ClipboardCheck, Clipboard } from "lucide-react";
 import { cn } from "~/lib/utils";
@@ -20,8 +20,6 @@ export default function CodeBlock(props: CodeBlockProps) {
 
   const match = /language-(\w+)/.exec(className || "");
 
-  console.log(match);
-
   const copyToClipboard = () => {
     void navigator.clipboard.writeText(String(children));
     setCopied(true);
@@ -34,7 +32,11 @@ export default function CodeBlock(props: CodeBlockProps) {
   const lineCount = value.split("\n").length;
   const lineHeight = 20;
   const maxHeight = 500;
-  const height = Math.min(lineCount * lineHeight, maxHeight);
+  const minHeight = 50;
+  const height = Math.min(
+    Math.max(lineCount * lineHeight, minHeight),
+    maxHeight,
+  );
 
   return match ? (
     <div className="relative">
@@ -46,15 +48,10 @@ export default function CodeBlock(props: CodeBlockProps) {
       >
         {copied ? <ClipboardCheck className="text-green-500" /> : <Clipboard />}
       </Button>
-      <Editor
-        height={`${height}px`}
-        language={match[1]}
+      <CodeViewer
+        height={height}
+        language={match[1] ?? "plaintext"}
         value={value}
-        theme="vs-dark"
-        options={{
-          readOnly: true,
-          scrollBeyondLastLine: false,
-        }}
       />
     </div>
   ) : (
@@ -63,3 +60,26 @@ export default function CodeBlock(props: CodeBlockProps) {
     </code>
   );
 }
+
+const CodeViewer = memo(
+  ({
+    height,
+    language,
+    value,
+  }: {
+    height: number;
+    language: string;
+    value: string;
+  }) => {
+    return (
+      <Editor
+        height={`${height}px`}
+        language={language}
+        value={value}
+        theme="vs-dark"
+        options={{ readOnly: true, scrollBeyondLastLine: false }}
+        className="min-w-[500px]"
+      />
+    );
+  },
+);

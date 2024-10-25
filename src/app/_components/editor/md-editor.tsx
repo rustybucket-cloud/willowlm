@@ -20,6 +20,7 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import "./md-editor.css";
+import PlainTextCodeEditorDescriptor from "./code-block";
 
 const simpleSandpackConfig: SandpackConfig = {
   defaultPreset: "react",
@@ -62,32 +63,33 @@ export default function MDEditor({
         thematicBreakPlugin(),
         markdownShortcutPlugin(),
         codeBlockPlugin({
-          defaultCodeBlockLanguage: "js",
+          // defaultCodeBlockLanguage: "js",
+          codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor],
         }),
-        sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
-        codeMirrorPlugin({
-          codeBlockLanguages: {
-            js: "JavaScript",
-            css: "CSS",
-            ts: "TypeScript",
-            py: "Python",
-            json: "JSON",
-            html: "HTML",
-            yaml: "YAML",
-            bash: "Bash",
-            php: "PHP",
-            md: "Markdown",
-            rb: "Ruby",
-            rs: "Rust",
-            go: "Go",
-            java: "Java",
-            kt: "Kotlin",
-            c: "C",
-            cpp: "C++",
-            cs: "C#",
-            swift: "Swift",
-          },
-        }),
+        // sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
+        // codeMirrorPlugin({
+        //   codeBlockLanguages: {
+        //     js: "JavaScript",
+        //     css: "CSS",
+        //     ts: "TypeScript",
+        //     py: "Python",
+        //     json: "JSON",
+        //     html: "HTML",
+        //     yaml: "YAML",
+        //     bash: "Bash",
+        //     php: "PHP",
+        //     md: "Markdown",
+        //     rb: "Ruby",
+        //     rs: "Rust",
+        //     go: "Go",
+        //     java: "Java",
+        //     kt: "Kotlin",
+        //     c: "C",
+        //     cpp: "C++",
+        //     cs: "C#",
+        //     swift: "Swift",
+        //   },
+        // }),
       ]}
       markdown={initialValue}
       ref={editorRef}
