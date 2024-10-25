@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
-const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
+export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   match: (language, meta) => true,
   priority: 0,
   Editor: (props) => {
@@ -81,5 +81,3 @@ const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
     );
   },
 };
-
-export default PlainTextCodeEditorDescriptor;
