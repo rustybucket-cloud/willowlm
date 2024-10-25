@@ -9,17 +9,26 @@ import { cn } from "~/lib/utils";
 export function Viewer({ markdown }: { markdown: string }) {
   return (
     <Markdown
-      children={markdown}
       components={{
         code(props) {
+          // @ts-expect-error react-markdown types are outdated
           return <CodeBlock {...props} />;
         },
       }}
-    />
+    >
+      {markdown}
+    </Markdown>
   );
 }
 
-function CodeBlock(props: any) {
+interface CodeBlockProps {
+  children: React.ReactNode;
+  className: string;
+  node: React.ReactNode;
+}
+
+function CodeBlock(props: CodeBlockProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { children, className, node, ...rest } = props;
 
   const [copied, setCopied] = useState(false);
@@ -27,7 +36,7 @@ function CodeBlock(props: any) {
   const match = /language-(\w+)/.exec(className || "");
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(String(children));
+    void navigator.clipboard.writeText(String(children));
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -44,11 +53,9 @@ function CodeBlock(props: any) {
       >
         {copied ? <ClipboardCheck className="text-green-500" /> : <Clipboard />}
       </Button>
-      <SyntaxHighlighter
-        language={match[1]}
-        style={dark}
-        children={String(children).replace(/\n$/, "")}
-      />
+      <SyntaxHighlighter language={match[1]} style={dark}>
+        {String(children).replace(/\n$/, "")}
+      </SyntaxHighlighter>
     </div>
   ) : (
     <code {...rest} className={cn("rounded bg-gray-700 px-1", className)}>

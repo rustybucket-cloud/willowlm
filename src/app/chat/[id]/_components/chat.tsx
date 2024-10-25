@@ -16,7 +16,7 @@ export default function Chat({
   id: string;
   chat?: ChatWithMessages;
 }) {
-  const [messages, setMessages] = useState<TempMessage[]>(chat?.messages || []);
+  const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
   const router = useRouter();
 
   const createChatQuery = api.chat.create.useMutation({
