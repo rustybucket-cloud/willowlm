@@ -2,7 +2,7 @@ import {
   type CodeBlockEditorDescriptor,
   useCodeBlockEditorContext,
 } from "@mdxeditor/editor";
-import Editor from "@monaco-editor/react";
+import MonacoEditor from "@monaco-editor/react";
 import { TrashIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -67,7 +67,7 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
             <TrashIcon className="text-gray-400" />
           </Button>
         </div>
-        <Editor
+        <MonacoEditor
           height={`${height}px`}
           language={props.language[1]}
           value={props.code}
