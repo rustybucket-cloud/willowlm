@@ -23,6 +23,7 @@ export default function Chat({
       if (!data?.id) return;
       const currentUrl = window.location.href;
       const newUrl = currentUrl.replace("new", data.id.toString());
+      // we don't want to reload the page
       window.history.pushState({}, "", newUrl);
     },
   });
