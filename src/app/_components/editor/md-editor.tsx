@@ -14,26 +14,10 @@ import {
   BlockTypeSelect,
   InsertCodeBlock,
   codeBlockPlugin,
-  type SandpackConfig,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import "./md-editor.css";
 import { PlainTextCodeEditorDescriptor } from "./code-block";
-
-const simpleSandpackConfig: SandpackConfig = {
-  defaultPreset: "react",
-  presets: [
-    {
-      label: "React",
-      name: "react",
-      meta: "live react",
-      sandpackTemplate: "react",
-      sandpackTheme: "light",
-      snippetFileName: "/App.js",
-      snippetLanguage: "jsx",
-    },
-  ],
-};
 
 export default function MDEditor({
   initialValue,

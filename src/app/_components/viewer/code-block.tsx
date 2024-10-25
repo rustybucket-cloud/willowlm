@@ -61,25 +61,25 @@ export default function CodeBlock(props: CodeBlockProps) {
   );
 }
 
-const CodeViewer = memo(
-  ({
-    height,
-    language,
-    value,
-  }: {
-    height: number;
-    language: string;
-    value: string;
-  }) => {
-    return (
-      <Editor
-        height={`${height}px`}
-        language={language}
-        value={value}
-        theme="vs-dark"
-        options={{ readOnly: true, scrollBeyondLastLine: false }}
-        className="min-w-[500px]"
-      />
-    );
-  },
-);
+function MonacoEditor({
+  height,
+  language,
+  value,
+}: {
+  height: number;
+  language: string;
+  value: string;
+}) {
+  return (
+    <Editor
+      height={`${height}px`}
+      language={language}
+      value={value}
+      theme="vs-dark"
+      options={{ readOnly: true, scrollBeyondLastLine: false }}
+      className="min-w-[500px]"
+    />
+  );
+}
+
+const CodeViewer = memo(MonacoEditor);
