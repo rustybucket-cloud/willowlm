@@ -37,7 +37,7 @@ export default function Chats({ children }: { children: React.ReactNode }) {
           </div>
         </SheetHeader>
 
-        {children}
+        <div className="h-[calc(100dvh-4rem)] overflow-y-auto">{children}</div>
       </SheetContent>
     </Sheet>
   );
