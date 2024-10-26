@@ -11,14 +11,14 @@ export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
 
   void api.chat.getAll();
-  const session = await getServerAuthSession();
 
-  let chat;
-  if (id !== "new") {
-    chat = await api.chat.getWithMessages({ id: parseInt(id) });
-    if (chat == null) {
-      return notFound();
-    }
+  const [session, chat] = await Promise.all([
+    getServerAuthSession(),
+    id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
+  ]);
+
+  if (id !== "new" && chat == null) {
+    return notFound();
   }
 
   return (
@@ -29,7 +29,7 @@ export default async function Chat({ params }: { params: { id: string } }) {
           <ChatList activeChatId={id} />
         </Suspense>
       </Chats>
-      <ChatEditor id={id} chat={chat} />
+      <ChatEditor id={id} chat={chat} session={session} />
     </HydrateClient>
   );
 }

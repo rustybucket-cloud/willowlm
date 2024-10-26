@@ -56,7 +56,7 @@ export default function ChatEditor({
             <SelectItem value="o1-mini">O1 Mini</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="ghost" onClick={sendChat}>
+        <Button variant="ghost" onClick={sendChat} className="bg-background">
           <ArrowUp />
         </Button>
       </div>

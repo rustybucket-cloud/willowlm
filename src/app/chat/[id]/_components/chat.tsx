@@ -4,17 +4,20 @@ import { useState } from "react";
 import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
-import { cn } from "~/lib/utils";
 import "~/app/_components/md.css";
 import Editor from "./editor";
 import { create } from "zustand";
+import { Session } from "next-auth";
+import { cn } from "~/lib/utils";
 
 export default function Chat({
   id,
   chat,
+  session,
 }: {
   id: string;
-  chat?: ChatWithMessages;
+  chat: ChatWithMessages | null;
+  session: Session | null;
 }) {
   const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
   const setCreatedMessage = useCreatedMessageStore(
@@ -96,20 +99,31 @@ export default function Chat({
         </p>
       ) : null}
       {messages.length > 0 ? (
-        <div className="md-container mx-auto mb-44 flex max-w-4xl flex-col gap-2 p-2 px-4">
-          {messages.map((message) => (
+        <div className="md-container mx-auto mb-44 flex max-w-4xl flex-col p-2 px-4">
+          {messages.map((message, i) => (
             <div
               key={message.content}
-              className={cn(
-                message.role === "user"
-                  ? "self-end rounded bg-gray-800 p-2"
-                  : "",
-              )}
+              className={cn("flex gap-4", i !== 0 && "pt-12")}
             >
-              <Viewer markdown={message.content} />
+              <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-800">
+                {message.role === "user"
+                  ? (session?.user?.name?.[0] ?? "Y")
+                  : "AI"}
+              </div>
+              <div className="relative flex pt-[8px]">
+                {i !== messages.length - 1 ? (
+                  <div className="absolute -left-10 top-0 h-[calc(100%+50px)] min-h-[40px] w-[1px] bg-gray-600" />
+                ) : (
+                  <div>
+                    <CreatedMessage />
+                  </div>
+                )}
+                <div>
+                  <Viewer markdown={message.content} />
+                </div>
+              </div>
             </div>
           ))}
-          <CreatedMessage />
         </div>
       ) : null}
       <Editor onSubmit={onSubmit} />
