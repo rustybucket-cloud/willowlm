@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { Viewer } from "~/app/_components";
-import type { ChatWithMessages, TempMessage } from "~/types";
+import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
 import "~/app/_components/md.css";
 import Editor from "./editor";
 import { create } from "zustand";
 import { Session } from "next-auth";
 import { cn } from "~/lib/utils";
+import { useToast } from "~/hooks/use-toast";
+import { Toaster } from "~/components/ui/toaster";
 
 export default function Chat({
   id,
@@ -23,6 +25,8 @@ export default function Chat({
   const setCreatedMessage = useCreatedMessageStore(
     (state) => state.setCreatedMessage,
   );
+
+  const { toast } = useToast();
 
   const createChatQuery = api.chat.create.useMutation({
     onSuccess: (data) => {
@@ -74,9 +78,23 @@ export default function Chat({
         });
       }
     },
+    onError: (error: unknown) => {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+      });
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.pop();
+        return newMessages;
+      });
+      setCreatedMessage(null);
+    },
   });
 
-  const onSubmit = async (input: string) => {
+  const onSubmit = async (input: string, model: Model) => {
     setMessages((prev) => {
       return [
         ...prev,
@@ -87,7 +105,7 @@ export default function Chat({
 
     chatQuery.mutate({
       messages: [...messages, { role: "user", content: input }],
-      model: "gpt-4o",
+      model: model,
     });
   };
 
@@ -127,6 +145,7 @@ export default function Chat({
         </div>
       ) : null}
       <Editor onSubmit={onSubmit} />
+      <Toaster />
     </>
   );
 }

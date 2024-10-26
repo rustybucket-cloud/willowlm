@@ -22,20 +22,29 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async function* ({ input }) {
+      console.log(input);
       const model = new OpenAI({
         model: input.model,
         temperature: 0.0,
         apiKey: process.env.OPENAI_API_KEY,
       });
 
-      const stream = await model.stream([
-        ...input.messages,
-        {
-          role: "system",
-          content:
-            "Respond in markdown. Don't mention that you're using markdown.",
-        },
-      ]);
+      let stream;
+      try {
+        stream = await model.stream([
+          ...input.messages,
+          {
+            role: "system",
+            content:
+              "Respond in markdown. Don't mention that you're using markdown.",
+          },
+        ]);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+
+      if (!stream) throw new Error("Failed to stream");
 
       for await (const chunk of stream) {
         yield chunk;

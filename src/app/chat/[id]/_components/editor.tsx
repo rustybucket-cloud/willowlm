@@ -17,7 +17,7 @@ import { type MDXEditorMethods } from "@mdxeditor/editor";
 export default function ChatEditor({
   onSubmit = () => null,
 }: {
-  onSubmit?: (input: string) => void;
+  onSubmit?: (input: string, model: Model) => void;
 }) {
   const [model, setModel] = useState<Model>("gpt-4o");
 
@@ -31,7 +31,7 @@ export default function ChatEditor({
 
     editorRef.current.setMarkdown("");
 
-    onSubmit(markdown);
+    onSubmit(markdown, model);
   };
 
   const updateModel = (value: string) => {

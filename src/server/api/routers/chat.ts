@@ -10,7 +10,11 @@ import { type Chat, type ChatWithMessages } from "~/types";
 
 export const chatRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(z.object({ messages: z.array(messageSchema) }))
+    .input(
+      z.object({
+        messages: z.array(messageSchema),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const response = await invoke(
         [
