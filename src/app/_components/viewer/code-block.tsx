@@ -9,26 +9,25 @@ import Editor from "@monaco-editor/react";
 interface CodeBlockProps {
   children: React.ReactNode;
   className: string;
-  node: React.ReactNode;
+  value: string;
 }
 
-export default function CodeBlock(props: CodeBlockProps) {
+function CodeBlock(props: CodeBlockProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { children, className, node, ...rest } = props;
+  const { value, className, ...rest } = props;
 
   const [copied, setCopied] = useState(false);
 
   const match = /language-(\w+)/.exec(className || "");
 
   const copyToClipboard = () => {
-    void navigator.clipboard.writeText(String(children));
+    void navigator.clipboard.writeText(value);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
     }, 1000);
   };
 
-  const value = String(children).replace(/\n$/, "");
   const lineCount = value.split("\n").length;
   const lineHeight = 20;
   const maxHeight = 500;
@@ -48,7 +47,7 @@ export default function CodeBlock(props: CodeBlockProps) {
       >
         {copied ? <ClipboardCheck className="text-green-500" /> : <Clipboard />}
       </Button>
-      <CodeViewer
+      <MonacoEditor
         height={height}
         language={match[1] ?? "plaintext"}
         value={value}
@@ -56,10 +55,12 @@ export default function CodeBlock(props: CodeBlockProps) {
     </div>
   ) : (
     <code {...rest} className={cn("rounded bg-gray-700 px-1", className)}>
-      {children}
+      {value}
     </code>
   );
 }
+
+export default memo(CodeBlock);
 
 function MonacoEditor({
   height,
@@ -81,5 +82,3 @@ function MonacoEditor({
     />
   );
 }
-
-const CodeViewer = memo(MonacoEditor);

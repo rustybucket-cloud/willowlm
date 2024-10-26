@@ -7,6 +7,7 @@ import { api } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 import "~/app/_components/md.css";
 import Editor from "./editor";
+import { create } from "zustand";
 
 export default function Chat({
   id,
@@ -16,6 +17,9 @@ export default function Chat({
   chat?: ChatWithMessages;
 }) {
   const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
+  const setCreatedMessage = useCreatedMessageStore(
+    (state) => state.setCreatedMessage,
+  );
 
   const createChatQuery = api.chat.create.useMutation({
     onSuccess: (data) => {
@@ -40,15 +44,18 @@ export default function Chat({
       let response = "";
       for await (const chunk of data) {
         response += chunk;
-        setMessages((prev) => {
-          const newMessages = [...prev];
-          const lastMessage = newMessages[newMessages.length - 1];
-          if (lastMessage && lastMessage.role === "assistant") {
-            lastMessage.content = response;
-          }
-          return newMessages;
-        });
+        setCreatedMessage(response);
       }
+
+      setCreatedMessage(null);
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        const lastMessage = newMessages[newMessages.length - 1];
+        if (lastMessage && lastMessage.role === "assistant") {
+          lastMessage.content = response;
+        }
+        return newMessages;
+      });
 
       if (id === "new") {
         createChatQuery.mutate({
@@ -102,9 +109,26 @@ export default function Chat({
               <Viewer markdown={message.content} />
             </div>
           ))}
+          <CreatedMessage />
         </div>
       ) : null}
       <Editor onSubmit={onSubmit} />
     </>
   );
 }
+
+// using an extra component to avoid re-rendering the entire chat when the created message changes
+function CreatedMessage() {
+  const createdMessage = useCreatedMessageStore(
+    (state) => state.createdMessage,
+  );
+  return createdMessage ? <Viewer markdown={createdMessage} /> : null;
+}
+
+const useCreatedMessageStore = create<{
+  createdMessage: string | null;
+  setCreatedMessage: (message: string | null) => void;
+}>((set) => ({
+  createdMessage: null,
+  setCreatedMessage: (message) => set({ createdMessage: message }),
+}));

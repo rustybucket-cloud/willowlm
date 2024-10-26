@@ -7,8 +7,9 @@ export function Viewer({ markdown }: { markdown: string }) {
     <Markdown
       components={{
         code(props) {
+          const value = String(props.children).replace(/\n$/, "");
           // @ts-expect-error react-markdown types are outdated
-          return <CodeBlock {...props} />;
+          return <CodeBlock {...props} value={value} />;
         },
       }}
     >
