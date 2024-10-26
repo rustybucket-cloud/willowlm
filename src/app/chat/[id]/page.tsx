@@ -28,6 +28,8 @@ export default async function Chat({ params }: { params: { id: string } }) {
     showPerplexity: showPerplexityFlag,
   };
 
+  console.log(flags);
+
   if (id !== "new" && chat == null) {
     return notFound();
   }
