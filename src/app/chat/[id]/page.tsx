@@ -6,16 +6,27 @@ import { getServerAuthSession } from "~/server/auth";
 import NavMenu from "~/components/nav-menu";
 import ChatList from "./_components/chat-list";
 import { Suspense } from "react";
+import { showAnthropic, showGemini, showPerplexity } from "~/lib/flags";
 
 export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
 
   void api.chat.getAll();
 
-  const [session, chat] = await Promise.all([
-    getServerAuthSession(),
-    id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
-  ]);
+  const [session, chat, showAnthropicFlag, showGeminiFlag, showPerplexityFlag] =
+    await Promise.all([
+      getServerAuthSession(),
+      id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
+      showAnthropic(),
+      showGemini(),
+      showPerplexity(),
+    ]);
+
+  const flags = {
+    showAnthropic: showAnthropicFlag,
+    showGemini: showGeminiFlag,
+    showPerplexity: showPerplexityFlag,
+  };
 
   if (id !== "new" && chat == null) {
     return notFound();
@@ -29,7 +40,7 @@ export default async function Chat({ params }: { params: { id: string } }) {
           <ChatList activeChatId={id} />
         </Suspense>
       </Chats>
-      <ChatEditor id={id} chat={chat} session={session} />
+      <ChatEditor id={id} chat={chat} session={session} flags={flags} />
     </HydrateClient>
   );
 }

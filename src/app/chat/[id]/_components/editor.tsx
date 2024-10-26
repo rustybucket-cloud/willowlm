@@ -7,6 +7,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { ArrowUp } from "lucide-react";
@@ -14,10 +17,17 @@ import { MODELS } from "~/lib/models";
 import type { Model } from "~/types";
 import MDEditor from "~/app/_components/editor/md-editor";
 import { type MDXEditorMethods } from "@mdxeditor/editor";
+
 export default function ChatEditor({
   onSubmit = () => null,
+  flags,
 }: {
   onSubmit?: (input: string, model: Model) => void;
+  flags: {
+    showAnthropic: boolean;
+    showGemini: boolean;
+    showPerplexity: boolean;
+  };
 }) {
   const [model, setModel] = useState<Model>("gpt-4o");
 
@@ -49,11 +59,45 @@ export default function ChatEditor({
             <SelectValue placeholder="Select a model" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-            <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-            <SelectItem value="gpt-4o-turbo">GPT-4o Turbo</SelectItem>
-            <SelectItem value="o1-preview">O1 Preview</SelectItem>
-            <SelectItem value="o1-mini">O1 Mini</SelectItem>
+            <SelectGroup>
+              <SelectLabel>OpenAI</SelectLabel>
+              <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+              <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+              <SelectItem value="gpt-4o-turbo">GPT-4o Turbo</SelectItem>
+              <SelectItem value="o1-preview">O1 Preview</SelectItem>
+              <SelectItem value="o1-mini">O1 Mini</SelectItem>
+            </SelectGroup>
+            {flags.showAnthropic ? (
+              <>
+                <SelectSeparator />
+                <SelectGroup>
+                  <SelectLabel>Anthropic</SelectLabel>
+                  <SelectItem value="claude-3-5-sonnet">
+                    Claude 3.5 Sonnet
+                  </SelectItem>
+                </SelectGroup>
+              </>
+            ) : null}
+            {flags.showGemini ? (
+              <>
+                <SelectSeparator />
+                <SelectGroup>
+                  <SelectLabel>Google</SelectLabel>
+                  <SelectItem value="gemini-1.5-flash">
+                    Gemini 1.5 Flash
+                  </SelectItem>
+                </SelectGroup>
+              </>
+            ) : null}
+            {flags.showPerplexity ? (
+              <>
+                <SelectSeparator />
+                <SelectGroup>
+                  <SelectLabel>Perplexity</SelectLabel>
+                  <SelectItem value="perplexity-2">Perplexity 2</SelectItem>
+                </SelectGroup>
+              </>
+            ) : null}
           </SelectContent>
         </Select>
         <Button variant="ghost" onClick={sendChat} className="bg-background">

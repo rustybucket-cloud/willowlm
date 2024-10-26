@@ -16,10 +16,16 @@ export default function Chat({
   id,
   chat,
   session,
+  flags,
 }: {
   id: string;
   chat: ChatWithMessages | null;
   session: Session | null;
+  flags: {
+    showAnthropic: boolean;
+    showGemini: boolean;
+    showPerplexity: boolean;
+  };
 }) {
   const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
   const setCreatedMessage = useCreatedMessageStore(
@@ -144,7 +150,7 @@ export default function Chat({
           ))}
         </div>
       ) : null}
-      <Editor onSubmit={onSubmit} />
+      <Editor onSubmit={onSubmit} flags={flags} />
       <Toaster />
     </>
   );
