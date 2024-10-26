@@ -38,7 +38,7 @@ function CodeBlock(props: CodeBlockProps) {
   );
 
   return match ? (
-    <div className="relative">
+    <div className="relative max-w-full">
       <Button
         variant="ghost"
         size="icon"
@@ -74,6 +74,7 @@ function MonacoEditor({
   return (
     <Editor
       height={`${height}px`}
+      width="100%"
       language={language}
       value={value}
       theme="vs-dark"

@@ -17,7 +17,10 @@ export default async function ChatList({
             variant={Number(activeChatId) === chat.id ? "default" : "ghost"}
             className="flex w-full justify-start"
           >
-            <Link href={`/chat/${chat.id}`} className="w-full text-start">
+            <Link
+              href={`/chat/${chat.id}`}
+              className="w-[calc(100%-4px)] truncate text-start"
+            >
               {chat.name}
             </Link>
           </Button>
