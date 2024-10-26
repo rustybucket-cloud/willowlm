@@ -94,7 +94,7 @@ export default function Chat({
   return (
     <>
       {messages.length === 0 ? (
-        <p className="flex h-[calc(100vh-4rem)] items-center justify-center text-center text-muted-foreground">
+        <p className="flex h-[calc(100dvh-4rem)] items-center justify-center text-center text-muted-foreground">
           Select a model and ask anything!
         </p>
       ) : null}
