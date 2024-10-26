@@ -77,7 +77,11 @@ function MonacoEditor({
       language={language}
       value={value}
       theme="vs-dark"
-      options={{ readOnly: true, scrollBeyondLastLine: false }}
+      options={{
+        readOnly: true,
+        scrollBeyondLastLine: false,
+        minimap: { enabled: height === 500 },
+      }}
       className="min-w-[500px]"
     />
   );

@@ -15,6 +15,33 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
+const languageOptions = [
+  { value: "bash", label: "Bash" },
+  { value: "cpp", label: "C++" },
+  { value: "csharp", label: "C#" },
+  { value: "css", label: "CSS" },
+  { value: "go", label: "Go" },
+  { value: "html", label: "HTML" },
+  { value: "java", label: "Java" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "json", label: "JSON" },
+  { value: "jsx", label: "JSX" },
+  { value: "kotlin", label: "Kotlin" },
+  { value: "markdown", label: "Markdown" },
+  { value: "php", label: "PHP" },
+  { value: "plaintext", label: "Plain Text" },
+  { value: "python", label: "Python" },
+  { value: "ruby", label: "Ruby" },
+  { value: "rust", label: "Rust" },
+  { value: "shell", label: "Shell" },
+  { value: "sql", label: "SQL" },
+  { value: "swift", label: "Swift" },
+  { value: "tsx", label: "TSX" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "xml", label: "XML" },
+  { value: "yaml", label: "YAML" },
+];
+
 export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   match: (language, meta) => true,
   priority: 0,
@@ -26,7 +53,7 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
     const lineCount = props.code.split("\n").length;
     const lineHeight = 20;
     const maxHeight = 500;
-    const minHeight = 50;
+    const minHeight = 40;
     const height = Math.min(
       Math.max(lineCount * lineHeight, minHeight),
       maxHeight,
@@ -43,7 +70,7 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
     return (
       <div
         onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}
-        className="flex flex-col bg-gray-800"
+        className="flex flex-col gap-2 bg-gray-800"
       >
         <div className="flex w-full justify-between">
           <Select
@@ -53,17 +80,18 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
               cb.setLanguage(value ?? "plaintext");
             }}
           >
-            <SelectTrigger className="max-w-48">
+            <SelectTrigger className="max-w-48 text-white" data-language>
               <SelectValue
                 className="text-white"
                 placeholder="Select a language"
               />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="plaintext">Plain Text</SelectItem>
-              <SelectItem value="javascript">JavaScript</SelectItem>
-              <SelectItem value="typescript">TypeScript</SelectItem>
-              <SelectItem value="python">Python</SelectItem>
+            <SelectContent className="bg-gray-800">
+              {languageOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button
@@ -77,12 +105,13 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
         </div>
         <MonacoEditor
           height={`${height}px`}
-          language={props.language[1]}
+          language={language}
           value={props.code}
           onChange={(value) => cb.setCode(value ?? "")}
           theme="vs-dark"
           options={{
             scrollBeyondLastLine: false,
+            padding: { top: 10, bottom: 10 },
           }}
           onMount={(editor) => {
             editorRef.current = editor;
