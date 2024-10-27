@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { useEffect, useState } from "react";
 import { useChatStore } from "../stores/chatStore";
+import { useMessagesStore } from "../stores/messagesStore";
 import { Chat } from "~/types";
 
 export default function Chats({
@@ -28,6 +29,8 @@ export default function Chats({
     setChats(initialChats);
   }, [initialChats]);
 
+  const setMessages = useMessagesStore((state) => state.setMessages);
+
   return (
     <Sheet open={isOpen} onOpenChange={(newOpen) => setIsOpen(newOpen)}>
       <SheetTrigger className="fixed left-2 top-2">
@@ -43,6 +46,7 @@ export default function Chats({
                 size="icon"
                 onClick={() => {
                   setIsOpen(false);
+                  setMessages([]);
                 }}
               >
                 <Plus />

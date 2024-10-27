@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useEffect } from "react";
 import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
@@ -12,7 +12,7 @@ import { cn } from "~/lib/utils";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
 import { useChatStore } from "../stores/chatStore";
-
+import { useMessagesStore } from "../stores/messagesStore";
 export default function Chat({
   id,
   chat,
@@ -28,11 +28,21 @@ export default function Chat({
     showPerplexity: boolean;
   };
 }) {
-  const [messages, setMessages] = useState<TempMessage[]>(chat?.messages ?? []);
+  const { messages, setMessages } = useMessagesStore();
+  useEffect(() => {
+    setMessages(chat?.messages ?? []);
+  }, [chat]);
+
   const setCreatedMessage = useCreatedMessageStore(
     (state) => state.setCreatedMessage,
   );
   const isNewChatRef = useRef(messages.length === 0);
+  useEffect(() => {
+    // reset the new chat flag when the messages are reset
+    if (messages.length === 0) {
+      isNewChatRef.current = true;
+    }
+  }, [messages]);
 
   const { toast } = useToast();
 
@@ -65,14 +75,15 @@ export default function Chat({
       }
 
       setCreatedMessage(null);
-      setMessages((prev) => {
-        const newMessages = [...prev];
-        const lastMessage = newMessages[newMessages.length - 1];
-        if (lastMessage && lastMessage.role === "assistant") {
-          lastMessage.content = response;
-        }
-        return newMessages;
-      });
+      // setMessages((prev) => {
+      const newMessages = [...messages];
+      const lastMessage = newMessages[newMessages.length - 1];
+      if (lastMessage && lastMessage.role === "assistant") {
+        lastMessage.content = response;
+      }
+      setMessages(newMessages);
+
+      // });
 
       if (isNewChatRef.current) {
         createChatQuery.mutate({
@@ -96,23 +107,24 @@ export default function Chat({
         description: "Failed to send message",
         variant: "destructive",
       });
-      setMessages((prev) => {
-        const newMessages = [...prev];
-        newMessages.pop();
-        return newMessages;
-      });
+      // setMessages((prev) => {
+      const newMessages = [...messages];
+      newMessages.pop();
+      setMessages(newMessages);
+      // });
       setCreatedMessage(null);
     },
   });
 
   const onSubmit = async (input: string, model: Model) => {
-    setMessages((prev) => {
-      return [
-        ...prev,
-        { role: "user", content: input },
-        { role: "assistant", content: "" },
-      ];
-    });
+    // setMessages((prev) => {
+    const newMessages = [
+      ...messages,
+      { role: "user", content: input },
+      { role: "assistant", content: "" },
+    ];
+    setMessages(newMessages as TempMessage[]);
+    // });
 
     chatQuery.mutate({
       messages: [...messages, { role: "user", content: input }],
