@@ -5,14 +5,15 @@ import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
 import "~/app/_components/md.css";
-import Editor from "./editor";
+import Editor from "../editor";
 import { create } from "zustand";
 import { Session } from "next-auth";
 import { cn } from "~/lib/utils";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
-import { useChatStore } from "../stores/chatStore";
-import { useMessagesStore } from "../stores/messagesStore";
+import { useChatStore } from "../../stores/chatStore";
+import useChatMessages from "./useChatMessages";
+
 export default function Chat({
   id,
   chat,
@@ -28,10 +29,7 @@ export default function Chat({
     showPerplexity: boolean;
   };
 }) {
-  const { messages, setMessages } = useMessagesStore();
-  useEffect(() => {
-    setMessages(chat?.messages ?? []);
-  }, [chat]);
+  const { messages, setMessages } = useChatMessages(chat);
 
   const setCreatedMessage = useCreatedMessageStore(
     (state) => state.setCreatedMessage,
