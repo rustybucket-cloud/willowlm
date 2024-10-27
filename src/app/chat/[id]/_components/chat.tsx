@@ -11,6 +11,7 @@ import { Session } from "next-auth";
 import { cn } from "~/lib/utils";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
+import { useChatStore } from "../stores/chatStore";
 
 export default function Chat({
   id,
@@ -35,10 +36,12 @@ export default function Chat({
 
   const { toast } = useToast();
 
+  const addChat = useChatStore((state) => state.addChat);
+
   const createChatQuery = api.chat.create.useMutation({
     onSuccess: (data) => {
-      // todo: handle error
       if (!data?.id) return;
+      addChat(data);
       const currentUrl = window.location.href;
       const newUrl = currentUrl.replace("new", data.id.toString());
       // we don't want to reload the page
