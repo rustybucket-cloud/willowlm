@@ -22,9 +22,7 @@ export default function Chats({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // const chats = useChatStore((state) => state.chats);
   const { chats, setChats } = useChatStore();
-  console.log("chats", chats);
 
   useEffect(() => {
     setChats(initialChats);
