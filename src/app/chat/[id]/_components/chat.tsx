@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
@@ -31,6 +31,7 @@ export default function Chat({
   const setCreatedMessage = useCreatedMessageStore(
     (state) => state.setCreatedMessage,
   );
+  const isNewChatRef = useRef(messages.length === 0);
 
   const { toast } = useToast();
 
@@ -70,10 +71,11 @@ export default function Chat({
         return newMessages;
       });
 
-      if (id === "new") {
+      if (isNewChatRef.current) {
         createChatQuery.mutate({
           messages: messages,
         });
+        isNewChatRef.current = false;
       } else {
         const lastUserMessage = messages?.[messages.length - 2];
         const lastAssistantMessage = messages?.[messages.length - 1];
