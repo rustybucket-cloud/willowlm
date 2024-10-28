@@ -14,7 +14,7 @@ export default function NavMenu({ session }: { session: Session }) {
   return (
     <Menubar className="border-0">
       <MenubarMenu>
-        <MenubarTrigger className="fixed right-2 top-2">
+        <MenubarTrigger className="fixed right-2 top-2 z-10 bg-background">
           {session?.user?.name}
         </MenubarTrigger>
         <MenubarContent className="relative right-2">
