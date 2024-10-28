@@ -1,6 +1,8 @@
-import { OpenAI } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
 
 import { Message, Model, TempMessage } from "~/types";
+
+export const OPENAI_MODELS = ["gpt-4o", "gpt-4o-mini"] as const;
 
 export function invoke(messages: TempMessage[], model: Model) {
   const openai = createOpenAI(model);
@@ -15,7 +17,7 @@ export function stream(messages: TempMessage[], model: Model) {
 }
 
 export function createOpenAI(model: Model) {
-  return new OpenAI({
+  return new ChatOpenAI({
     model,
     temperature: 0.0,
     apiKey: process.env.OPENAI_API_KEY,

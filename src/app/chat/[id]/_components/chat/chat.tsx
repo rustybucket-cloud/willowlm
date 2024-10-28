@@ -26,7 +26,6 @@ export default function Chat({
   flags: {
     showAnthropic: boolean;
     showGemini: boolean;
-    showPerplexity: boolean;
   };
 }) {
   const { messages, setMessages } = useChatMessages(chat);

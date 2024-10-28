@@ -23,14 +23,6 @@ export async function GET(request: NextRequest) {
           { value: true, label: "On" },
         ],
       },
-      showPerplexity: {
-        description: "Controls whether the Perplexity model is visible",
-        origin: "https://willowlm.com/#show-perplexity",
-        options: [
-          { value: false, label: "Off" },
-          { value: true, label: "On" },
-        ],
-      },
     },
   });
 }

@@ -9,8 +9,3 @@ export const showGemini = flag({
   key: "showGemini",
   decide: () => process.env.SHOW_GEMINI === "true",
 });
-
-export const showPerplexity = flag({
-  key: "showPerplexity",
-  decide: () => process.env.SHOW_PERPLEXITY === "true",
-});

@@ -26,7 +26,6 @@ export default function ChatEditor({
   flags: {
     showAnthropic: boolean;
     showGemini: boolean;
-    showPerplexity: boolean;
   };
 }) {
   const [model, setModel] = useState<Model>("gpt-4o");
@@ -89,15 +88,31 @@ export default function ChatEditor({
                 </SelectGroup>
               </>
             ) : null}
-            {flags.showPerplexity ? (
-              <>
-                <SelectSeparator />
-                <SelectGroup>
-                  <SelectLabel>Perplexity</SelectLabel>
-                  <SelectItem value="perplexity-2">Perplexity 2</SelectItem>
-                </SelectGroup>
-              </>
-            ) : null}
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Perplexity</SelectLabel>
+              <SelectItem value="llama-3.1-sonar-large-128k-chat">
+                Llama Sonar Large
+              </SelectItem>
+              <SelectItem value="llama-3.1-sonar-small-128k-chat">
+                Llama Sonar Small
+              </SelectItem>
+              <SelectItem value="llama-3.1-8b-instruct">
+                Llama 8B Instruct
+              </SelectItem>
+              <SelectItem value="llama-3.1-70b-instruct">
+                Llama 70B Instruct
+              </SelectItem>
+              <SelectItem value="llama-3.1-sonar-huge-128k-online">
+                Llama Sonar Huge Online
+              </SelectItem>
+              <SelectItem value="llama-3.1-sonar-large-128k-online">
+                Llama Sonar Large Online
+              </SelectItem>
+              <SelectItem value="llama-3.1-sonar-small-128k-online">
+                Llama Sonar Small Online
+              </SelectItem>
+            </SelectGroup>
           </SelectContent>
         </Select>
         <Button variant="ghost" onClick={sendChat} className="bg-background">

@@ -28,9 +28,9 @@ export const chatRouter = createTRPCRouter({
         "gpt-4o",
       );
 
-      const name = response.split("\n")[0];
+      const name = response.content;
 
-      if (!name) {
+      if (typeof name !== "string") {
         throw new Error("Failed to create chat");
       }
 

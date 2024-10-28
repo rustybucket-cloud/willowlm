@@ -6,7 +6,17 @@ import { ROLES } from "~/lib/roles";
 
 import { OpenAI } from "@langchain/openai";
 
+import {
+  OPENAI_MODELS,
+  stream as openAIStream,
+} from "~/server/providers/openAI";
+
 import { MODELS } from "~/lib/models";
+
+import {
+  PERPLEXITY_MODELS,
+  stream as perplexityStream,
+} from "~/server/providers/perplexity";
 
 export const aiRouter = createTRPCRouter({
   chat: protectedProcedure
@@ -22,23 +32,32 @@ export const aiRouter = createTRPCRouter({
       }),
     )
     .mutation(async function* ({ input }) {
-      console.log(input);
-      const model = new OpenAI({
-        model: input.model,
-        temperature: 0.0,
-        apiKey: process.env.OPENAI_API_KEY,
-      });
-
       let stream;
       try {
-        stream = await model.stream([
-          ...input.messages,
-          {
-            role: "system",
-            content:
-              "Respond in markdown. Don't mention that you're using markdown.",
-          },
-        ]);
+        if (
+          PERPLEXITY_MODELS.includes(
+            input.model as (typeof PERPLEXITY_MODELS)[number],
+          )
+        ) {
+          stream = await perplexityStream(
+            input.messages,
+            input.model as (typeof PERPLEXITY_MODELS)[number],
+          );
+        } else if (
+          OPENAI_MODELS.includes(input.model as (typeof OPENAI_MODELS)[number])
+        ) {
+          stream = await openAIStream(
+            [
+              ...input.messages,
+              {
+                role: "system",
+                content:
+                  "Respond in markdown. Don't mention that you're using markdown.",
+              },
+            ],
+            input.model,
+          );
+        }
       } catch (error) {
         console.error(error);
         throw error;
@@ -47,7 +66,7 @@ export const aiRouter = createTRPCRouter({
       if (!stream) throw new Error("Failed to stream");
 
       for await (const chunk of stream) {
-        yield chunk;
+        yield typeof chunk === "string" ? chunk : chunk.content;
       }
     }),
 });

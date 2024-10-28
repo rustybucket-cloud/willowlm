@@ -1,7 +1,4 @@
-export const MODELS = [
-  "gpt-4o",
-  "gpt-4o-mini",
-  "gpt-4o-turbo",
-  "o1-preview",
-  "o1-mini",
-] as const;
+import { PERPLEXITY_MODELS } from "~/server/providers/perplexity";
+import { OPENAI_MODELS } from "~/server/providers/openAI";
+
+export const MODELS = [...OPENAI_MODELS, ...PERPLEXITY_MODELS] as const;
