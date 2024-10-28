@@ -1,6 +1,6 @@
 import { api, HydrateClient } from "~/trpc/server";
 import ChatEditor from "./_components/chat";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Chats from "./_components/chats";
 import { getServerAuthSession } from "~/server/auth";
 import NavMenu from "~/components/nav-menu";
@@ -9,21 +9,19 @@ import { showAnthropic, showGemini, showPerplexity } from "~/lib/flags";
 export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
 
-  const [
-    session,
-    chat,
-    showAnthropicFlag,
-    showGeminiFlag,
-    showPerplexityFlag,
-    chats,
-  ] = await Promise.all([
-    getServerAuthSession(),
-    id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
-    showAnthropic(),
-    showGemini(),
-    showPerplexity(),
-    api.chat.getAll(),
-  ]);
+  const session = await getServerAuthSession();
+  if (!session) {
+    return redirect("/");
+  }
+
+  const [chat, showAnthropicFlag, showGeminiFlag, showPerplexityFlag, chats] =
+    await Promise.all([
+      id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
+      showAnthropic(),
+      showGemini(),
+      showPerplexity(),
+      api.chat.getAll(),
+    ]);
 
   const flags = {
     showAnthropic: showAnthropicFlag,
