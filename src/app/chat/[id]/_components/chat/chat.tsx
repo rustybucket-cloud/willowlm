@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
