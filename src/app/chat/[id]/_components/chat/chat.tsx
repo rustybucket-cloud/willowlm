@@ -143,14 +143,14 @@ export default function Chat({
               key={message.content}
               className={cn("flex gap-4", i !== 0 && "pt-12")}
             >
-              <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-800">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-800">
                 {message.role === "user"
                   ? (session?.user?.name?.[0] ?? "Y")
                   : "AI"}
               </div>
               <div className="relative flex pt-[8px]">
                 {i !== messages.length - 1 ? (
-                  <div className="absolute -left-10 top-0 h-[calc(100%+50px)] min-h-[40px] w-[1px] bg-gray-600" />
+                  <div className="absolute -left-10 top-0 z-[-1] h-[calc(100%+50px)] min-h-[40px] w-[1px] bg-gray-600" />
                 ) : (
                   <div>
                     <CreatedMessage />
