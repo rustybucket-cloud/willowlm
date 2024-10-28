@@ -13,6 +13,7 @@ import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
 import { useChatStore } from "../../stores/chatStore";
 import useChatMessages from "./useChatMessages";
+import useIsNewChatRef from "./useIsNewChatRef";
 
 export default function Chat({
   id,
@@ -34,13 +35,7 @@ export default function Chat({
   const setCreatedMessage = useCreatedMessageStore(
     (state) => state.setCreatedMessage,
   );
-  const isNewChatRef = useRef(messages.length === 0);
-  useEffect(() => {
-    // reset the new chat flag when the messages are reset
-    if (messages.length === 0) {
-      isNewChatRef.current = true;
-    }
-  }, [messages]);
+  const isNewChatRef = useIsNewChatRef(messages);
 
   const { toast } = useToast();
 
@@ -56,6 +51,7 @@ export default function Chat({
       window.history.pushState({}, "", newUrl);
     },
   });
+  const chatId = id === "new" ? createChatQuery.data?.id : Number(id);
 
   const saveMessageQuery = api.chat.saveMessages.useMutation({
     onError: (error: unknown) => {
@@ -73,15 +69,12 @@ export default function Chat({
       }
 
       setCreatedMessage(null);
-      // setMessages((prev) => {
       const newMessages = [...messages];
       const lastMessage = newMessages[newMessages.length - 1];
       if (lastMessage && lastMessage.role === "assistant") {
         lastMessage.content = response;
       }
       setMessages(newMessages);
-
-      // });
 
       if (isNewChatRef.current) {
         createChatQuery.mutate({
@@ -91,9 +84,19 @@ export default function Chat({
       } else {
         const lastUserMessage = messages?.[messages.length - 2];
         const lastAssistantMessage = messages?.[messages.length - 1];
+
         if (!lastUserMessage || !lastAssistantMessage) return;
+        if (!chatId) {
+          toast({
+            title: "Error",
+            description: "Failed to send message",
+            variant: "destructive",
+          });
+          return;
+        }
+
         saveMessageQuery.mutate({
-          chatId: Number(id),
+          chatId,
           messages: [lastUserMessage, lastAssistantMessage],
         });
       }
@@ -105,24 +108,20 @@ export default function Chat({
         description: "Failed to send message",
         variant: "destructive",
       });
-      // setMessages((prev) => {
       const newMessages = [...messages];
       newMessages.pop();
       setMessages(newMessages);
-      // });
       setCreatedMessage(null);
     },
   });
 
   const onSubmit = async (input: string, model: Model) => {
-    // setMessages((prev) => {
     const newMessages = [
       ...messages,
       { role: "user", content: input },
       { role: "assistant", content: "" },
     ];
     setMessages(newMessages as TempMessage[]);
-    // });
 
     chatQuery.mutate({
       messages: [...messages, { role: "user", content: input }],
