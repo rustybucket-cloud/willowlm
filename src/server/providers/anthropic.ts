@@ -1,16 +1,18 @@
 import { ChatAnthropic } from "@langchain/anthropic";
 import { type Model, type TempMessage } from "~/types";
 
-export function stream(messages: TempMessage[], model: Model) {
+export async function* stream(messages: TempMessage[], model: Model) {
   const anthropic = createAnthropic(model);
 
-  return anthropic.stream([
+  for await (const chunk of await anthropic.stream([
     {
       role: "system",
       content: "Respond in markdown. Don't mention that you're using markdown.",
     },
     ...messages,
-  ]);
+  ])) {
+    yield chunk.content;
+  }
 }
 
 function createAnthropic(model: Model) {
@@ -19,3 +21,8 @@ function createAnthropic(model: Model) {
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
 }
+
+export const ANTHROPIC_MODELS = [
+  "claude-3-5-sonnet-latest",
+  "claude-3-opus-latest",
+] as const;

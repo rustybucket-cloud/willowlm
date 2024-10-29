@@ -24,7 +24,6 @@ export default function Chat({
   chat: ChatWithMessages | null;
   session: Session | null;
   flags: {
-    showAnthropic: boolean;
     showGemini: boolean;
   };
 }) {

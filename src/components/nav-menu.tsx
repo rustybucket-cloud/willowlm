@@ -19,16 +19,6 @@ export default function NavMenu({ session }: { session: Session }) {
         </MenubarTrigger>
         <MenubarContent className="relative right-2">
           <MenubarItem>
-            <Link href="/dashboard" className="h-full w-full">
-              <Button
-                variant="ghost"
-                className="flex h-full w-full items-center justify-start"
-              >
-                Dashboard
-              </Button>
-            </Link>
-          </MenubarItem>
-          <MenubarItem>
             <Link href="/api/auth/signout" className="h-full w-full">
               <Button
                 variant="ghost"

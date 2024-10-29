@@ -15,6 +15,10 @@ import {
   PERPLEXITY_MODELS,
   stream as perplexityStream,
 } from "~/server/providers/perplexity";
+import {
+  ANTHROPIC_MODELS,
+  stream as anthropicStream,
+} from "~/server/providers/anthropic";
 
 export const aiRouter = createTRPCRouter({
   chat: protectedProcedure
@@ -55,6 +59,12 @@ export const aiRouter = createTRPCRouter({
             ],
             input.model,
           );
+        } else if (
+          ANTHROPIC_MODELS.includes(
+            input.model as (typeof ANTHROPIC_MODELS)[number],
+          )
+        ) {
+          stream = anthropicStream(input.messages, input.model);
         }
       } catch (error) {
         console.error(error);

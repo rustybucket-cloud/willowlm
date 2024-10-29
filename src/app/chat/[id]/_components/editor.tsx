@@ -24,7 +24,6 @@ export default function ChatEditor({
 }: {
   onSubmit?: (input: string, model: Model) => void;
   flags: {
-    showAnthropic: boolean;
     showGemini: boolean;
   };
 }) {
@@ -70,17 +69,16 @@ export default function ChatEditor({
               <SelectItem value="o1-preview">O1 Preview</SelectItem>
               <SelectItem value="o1-mini">O1 Mini</SelectItem>
             </SelectGroup>
-            {flags.showAnthropic ? (
-              <>
-                <SelectSeparator />
-                <SelectGroup>
-                  <SelectLabel>Anthropic</SelectLabel>
-                  <SelectItem value="claude-3-5-sonnet">
-                    Claude 3.5 Sonnet
-                  </SelectItem>
-                </SelectGroup>
-              </>
-            ) : null}
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Anthropic</SelectLabel>
+              <SelectItem value="claude-3-5-sonnet-latest">
+                Claude 3.5 Sonnet
+              </SelectItem>
+              <SelectItem value="claude-3-opus-latest">
+                Claude 3 Opus
+              </SelectItem>
+            </SelectGroup>
             {flags.showGemini ? (
               <>
                 <SelectSeparator />

@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import Chats from "./_components/chats";
 import { getServerAuthSession } from "~/server/auth";
 import NavMenu from "~/components/nav-menu";
-import { showAnthropic, showGemini } from "~/lib/flags";
+import { showGemini } from "~/lib/flags";
 
 export default async function Chat({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -14,15 +14,13 @@ export default async function Chat({ params }: { params: { id: string } }) {
     return redirect("/");
   }
 
-  const [chat, showAnthropicFlag, showGeminiFlag, chats] = await Promise.all([
+  const [chat, showGeminiFlag, chats] = await Promise.all([
     id !== "new" ? api.chat.getWithMessages({ id: parseInt(id) }) : null,
-    showAnthropic(),
     showGemini(),
     api.chat.getAll(),
   ]);
 
   const flags = {
-    showAnthropic: showAnthropicFlag,
     showGemini: showGeminiFlag,
   };
 
