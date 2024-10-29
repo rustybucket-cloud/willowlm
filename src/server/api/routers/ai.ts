@@ -4,8 +4,6 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { ROLES } from "~/lib/roles";
 
-import { OpenAI } from "@langchain/openai";
-
 import {
   OPENAI_MODELS,
   stream as openAIStream,
@@ -46,7 +44,7 @@ export const aiRouter = createTRPCRouter({
         } else if (
           OPENAI_MODELS.includes(input.model as (typeof OPENAI_MODELS)[number])
         ) {
-          stream = await openAIStream(
+          stream = openAIStream(
             [
               ...input.messages,
               {
@@ -66,7 +64,7 @@ export const aiRouter = createTRPCRouter({
       if (!stream) throw new Error("Failed to stream");
 
       for await (const chunk of stream) {
-        yield typeof chunk === "string" ? chunk : chunk.content;
+        yield chunk;
       }
     }),
 });

@@ -10,10 +10,12 @@ export function invoke(messages: TempMessage[], model: Model) {
   return openai.invoke(messages);
 }
 
-export function stream(messages: TempMessage[], model: Model) {
+export async function* stream(messages: TempMessage[], model: Model) {
   const openai = createOpenAI(model);
 
-  return openai.stream(messages);
+  for await (const chunk of await openai.stream(messages)) {
+    yield chunk.content;
+  }
 }
 
 export function createOpenAI(model: Model) {

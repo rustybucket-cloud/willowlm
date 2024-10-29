@@ -1,4 +1,5 @@
 import { TempMessage } from "~/types";
+import { z } from "zod";
 
 const perplexityRoute = "https://api.perplexity.ai/chat/completions";
 
@@ -38,10 +39,10 @@ async function* streamIterator(response: Response) {
     buffer += decoder.decode(value, { stream: true });
 
     // Process each line in the buffer
-    let lines = buffer.split("\n");
+    const lines = buffer.split("\n");
 
     // Keep the last incomplete line in the buffer
-    buffer = lines.pop() || "";
+    buffer = lines.pop() ?? "";
 
     for (let line of lines) {
       // Trim whitespace and skip empty lines
@@ -52,8 +53,8 @@ async function* streamIterator(response: Response) {
       if (line.startsWith("data: ")) {
         line = line.slice("data: ".length); // Remove "data: " prefix
         try {
-          const data = JSON.parse(line);
-          if (data.choices && data.choices[0]?.delta?.content) {
+          const data = PerplexityResponseSchema.parse(JSON.parse(line));
+          if (data?.choices?.[0]?.delta?.content) {
             yield data.choices[0].delta.content;
           }
         } catch (error) {
@@ -63,6 +64,16 @@ async function* streamIterator(response: Response) {
     }
   }
 }
+
+const PerplexityResponseSchema = z.object({
+  choices: z.array(
+    z.object({
+      delta: z.object({
+        content: z.string(),
+      }),
+    }),
+  ),
+});
 
 export const PERPLEXITY_MODELS = [
   "llama-3.1-sonar-large-128k-chat",
