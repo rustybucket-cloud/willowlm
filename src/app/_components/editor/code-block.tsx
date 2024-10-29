@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { ErrorBoundary } from "react-error-boundary";
 
 const languageOptions = [
   { value: "bash", label: "Bash" },
@@ -103,21 +104,23 @@ export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
             <TrashIcon className="text-gray-400" />
           </Button>
         </div>
-        <MonacoEditor
-          height={`${height}px`}
-          language={language}
-          value={props.code}
-          onChange={(value) => cb.setCode(value ?? "")}
-          theme="vs-dark"
-          options={{
-            scrollBeyondLastLine: false,
-            padding: { top: 10, bottom: 10 },
-          }}
-          onMount={(editor) => {
-            editorRef.current = editor;
-            editor.focus();
-          }}
-        />
+        <ErrorBoundary fallback={<div>Error loading editor</div>}>
+          <MonacoEditor
+            height={`${height}px`}
+            language={language}
+            value={props.code}
+            onChange={(value) => cb.setCode(value ?? "")}
+            theme="vs-dark"
+            options={{
+              scrollBeyondLastLine: false,
+              padding: { top: 10, bottom: 10 },
+            }}
+            onMount={(editor) => {
+              editorRef.current = editor;
+              editor.focus();
+            }}
+          />
+        </ErrorBoundary>
       </div>
     );
   },
