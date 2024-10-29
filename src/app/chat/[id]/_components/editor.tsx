@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -32,7 +32,7 @@ export default function ChatEditor({
 
   const editorRef = useRef<MDXEditorMethods>(null);
 
-  const sendChat = async () => {
+  const sendChat = useCallback(async () => {
     if (!editorRef.current) return;
 
     const markdown = editorRef.current.getMarkdown();
@@ -41,7 +41,7 @@ export default function ChatEditor({
     editorRef.current.setMarkdown("");
 
     onSubmit(markdown, model);
-  };
+  }, [onSubmit, model]);
 
   const updateModel = (value: string) => {
     if (!MODELS.includes(value as Model)) {
@@ -49,6 +49,10 @@ export default function ChatEditor({
     }
     setModel(value as Model);
   };
+
+  const onEnterKeyDown = useCallback(() => {
+    void sendChat();
+  }, [sendChat]);
 
   return (
     <div className="fixed bottom-8 left-0 right-0 mx-auto flex max-w-4xl flex-col gap-4 px-4">
@@ -119,7 +123,11 @@ export default function ChatEditor({
           <ArrowUp />
         </Button>
       </div>
-      <MDEditor initialValue={""} editorRef={editorRef} />
+      <MDEditor
+        initialValue={""}
+        editorRef={editorRef}
+        onEnterKeyDown={onEnterKeyDown}
+      />
     </div>
   );
 }

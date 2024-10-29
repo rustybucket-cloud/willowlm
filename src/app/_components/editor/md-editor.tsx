@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   MDXEditor,
   type MDXEditorMethods,
@@ -22,10 +22,23 @@ import { PlainTextCodeEditorDescriptor } from "./code-block";
 export default function MDEditor({
   initialValue,
   editorRef,
+  onEnterKeyDown,
 }: {
   initialValue: string;
   editorRef: React.RefObject<MDXEditorMethods>;
+  onEnterKeyDown: () => void;
 }) {
+  useEffect(() => {
+    const handleEnter = (event: KeyboardEvent) => {
+      const markdown = editorRef.current?.getMarkdown();
+      if (event.metaKey && event.key === "Enter" && markdown) {
+        onEnterKeyDown();
+      }
+    };
+    document.addEventListener("keydown", handleEnter);
+    return () => document.removeEventListener("keydown", handleEnter);
+  }, [editorRef, onEnterKeyDown]);
+
   return (
     <MDXEditor
       plugins={[
