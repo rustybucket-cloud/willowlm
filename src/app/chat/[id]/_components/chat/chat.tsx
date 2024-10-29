@@ -103,14 +103,17 @@ export default function Chat({
     },
     onError: (error: unknown) => {
       console.error(error);
+      const isResponse = createdMessageRef.current.length > 0;
       toast({
         title: "Error",
-        description: "Failed to send message",
+        description: isResponse
+          ? "There was a problem in the response"
+          : "Failed to send message",
         variant: "destructive",
       });
       const newMessages = [...messages];
       newMessages.pop();
-      if (createdMessageRef.current.length > 0) {
+      if (isResponse) {
         newMessages.push({
           role: "assistant",
           content: createdMessageRef.current,
