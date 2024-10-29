@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 
-import { Message, Model, TempMessage } from "~/types";
+import { type Model, type TempMessage } from "~/types";
 
 export const OPENAI_MODELS = ["gpt-4o", "gpt-4o-mini"] as const;
 

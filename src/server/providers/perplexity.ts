@@ -1,4 +1,4 @@
-import { TempMessage } from "~/types";
+import { type TempMessage } from "~/types";
 import { z } from "zod";
 
 const perplexityRoute = "https://api.perplexity.ai/chat/completions";

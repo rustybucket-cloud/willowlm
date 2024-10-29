@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Chat } from "~/types";
+import { type Chat } from "~/types";
 
 export const useChatStore = create<{
   chats: Chat[];

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TempMessage } from "~/types";
+import { type TempMessage } from "~/types";
 
 export const useMessagesStore = create<{
   messages: TempMessage[];

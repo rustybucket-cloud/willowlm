@@ -6,7 +6,7 @@ import { api } from "~/trpc/react";
 import "~/app/_components/md.css";
 import Editor from "../editor";
 import { create } from "zustand";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 import { cn } from "~/lib/utils";
 import { useToast } from "~/hooks/use-toast";
 import { Toaster } from "~/components/ui/toaster";
@@ -62,6 +62,7 @@ export default function Chat({
     onSuccess: async (data) => {
       let response = "";
       for await (const chunk of data) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         response += chunk;
         setCreatedMessage(response);
       }

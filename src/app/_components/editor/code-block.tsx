@@ -4,7 +4,7 @@ import {
 } from "@mdxeditor/editor";
 import MonacoEditor from "@monaco-editor/react";
 import { TrashIcon } from "lucide-react";
-import { editor } from "monaco-editor";
+import { type editor } from "monaco-editor";
 import { useRef } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -43,7 +43,7 @@ const languageOptions = [
 ];
 
 export const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
-  match: (language, meta) => true,
+  match: () => true,
   priority: 0,
   Editor: (props) => {
     const cb = useCodeBlockEditorContext();

@@ -1,5 +1,4 @@
 import React from "react";
-import { Menu } from "lucide-react";
 
 export default function ChatLayout({
   children,

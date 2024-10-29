@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useMessagesStore } from "../../stores/messagesStore";
-import { ChatWithMessages } from "~/types";
+import { type ChatWithMessages } from "~/types";
 
 export default function useChatMessages(chat: ChatWithMessages | null) {
   const mountedRef = useRef(false);
@@ -8,7 +8,7 @@ export default function useChatMessages(chat: ChatWithMessages | null) {
   useEffect(() => {
     setMessages(chat?.messages ?? []);
     mountedRef.current = true;
-  }, [chat]);
+  }, [chat, setMessages]);
 
   return {
     messages: mountedRef.current ? storedMessages : (chat?.messages ?? []),

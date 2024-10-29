@@ -12,7 +12,7 @@ import { Button } from "~/components/ui/button";
 import { useEffect, useState } from "react";
 import { useChatStore } from "../stores/chatStore";
 import { useMessagesStore } from "../stores/messagesStore";
-import { Chat } from "~/types";
+import { type Chat } from "~/types";
 
 export default function Chats({
   chats: initialChats,
@@ -27,7 +27,7 @@ export default function Chats({
 
   useEffect(() => {
     setChats(initialChats);
-  }, [initialChats]);
+  }, [initialChats, setChats]);
 
   const setMessages = useMessagesStore((state) => state.setMessages);
 

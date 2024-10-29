@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { TempMessage } from "~/types";
+import { type TempMessage } from "~/types";
 
 export default function useIsNewChatRef(messages: TempMessage[]) {
   const isNewChatRef = useRef(messages.length === 0);
