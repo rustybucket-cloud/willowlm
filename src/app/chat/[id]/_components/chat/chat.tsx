@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { Viewer } from "~/app/_components";
 import type { ChatWithMessages, Model, TempMessage } from "~/types";
 import { api } from "~/trpc/react";
@@ -57,22 +58,23 @@ export default function Chat({
     },
   });
 
+  const createdMessageRef = useRef<string>("");
   const chatQuery = api.ai.chat.useMutation({
     onSuccess: async (data) => {
-      let response = "";
       for await (const chunk of data) {
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        response += chunk;
-        setCreatedMessage(response);
+        createdMessageRef.current += chunk;
+        setCreatedMessage(createdMessageRef.current);
       }
 
       setCreatedMessage(null);
       const newMessages = [...messages];
       const lastMessage = newMessages[newMessages.length - 1];
       if (lastMessage && lastMessage.role === "assistant") {
-        lastMessage.content = response;
+        lastMessage.content = createdMessageRef.current;
       }
       setMessages(newMessages);
+      createdMessageRef.current = "";
 
       if (isNewChatRef.current) {
         createChatQuery.mutate({
@@ -108,6 +110,13 @@ export default function Chat({
       });
       const newMessages = [...messages];
       newMessages.pop();
+      if (createdMessageRef.current.length > 0) {
+        newMessages.push({
+          role: "assistant",
+          content: createdMessageRef.current,
+        });
+      }
+      createdMessageRef.current = "";
       setMessages(newMessages);
       setCreatedMessage(null);
     },
